@@ -1,9 +1,11 @@
 using JobBoardAggregator.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace WebCrawler.Repositories
 {
+    
     public interface IJobRepository
     {
-        Task AddJobsAsync(List<Job> jobs);
+        Task AddJobsAsync(Job jobs);
     }
 }

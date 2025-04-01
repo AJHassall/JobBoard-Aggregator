@@ -7,36 +7,20 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using JobBoardAggregator.Models;
 using WebCrawler.Repositories;
-
-public class JobRepository : IJobRepository
-{
-    private readonly JobDbContext _context;
-
-    public JobRepository(JobDbContext context)
-    {
-        _context = context;
-    }
-
-    public async Task AddJobsAsync(List<Job> jobs)
-    {
-        await _context.Jobs.AddRangeAsync(jobs);
-        await _context.SaveChangesAsync();
-    }
-}
+using Microsoft.Extensions.DependencyInjection; // Add this using statement
 
 public class JobScraperWorker : BackgroundService
 {
     private readonly ILogger<JobScraperWorker> _logger;
-    private readonly string _rapidApiKey = "YOUR_RAPIDAPI_KEY"; // Replace!
-    private readonly IJobRepository _jobRepository;
+    private readonly string _rapidApiKey = "";
+    private readonly IServiceScopeFactory _scopeFactory;
 
-    public JobScraperWorker(ILogger<JobScraperWorker> logger, IJobRepository jobRepository)
+    public JobScraperWorker(ILogger<JobScraperWorker> logger, IServiceScopeFactory scopeFactory)
     {
         _logger = logger;
-        _jobRepository = jobRepository;
+        _scopeFactory = scopeFactory;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -45,46 +29,55 @@ public class JobScraperWorker : BackgroundService
         {
             try
             {
-                await ScrapeAndStoreJobs();
+                await ScrapeAndStoreJobs(stoppingToken);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred during job scraping.");
             }
 
-            await Task.Delay(TimeSpan.FromMinutes(60), stoppingToken); // Adjust delay
+            await Task.Delay(TimeSpan.FromMinutes(60), stoppingToken);
         }
     }
 
-    private async Task ScrapeAndStoreJobs()
+    private async Task ScrapeAndStoreJobs(CancellationToken stoppingToken) // Pass cancellation token
     {
-        using (var client = new HttpClient())
+        using (var scope = _scopeFactory.CreateScope()) // Create scope
         {
-            var request = new HttpRequestMessage
+            var jobRepository = scope.ServiceProvider.GetRequiredService<IJobRepository>(); // Resolve repository
+
+            using (var client = new HttpClient())
             {
-                Method = HttpMethod.Get,
-                RequestUri = new Uri("https://active-jobs-db.p.rapidapi.com/active-ats-24h?limit=10&offset=0&title_filter=%22Data%20Engineer%22&location_filter=%22United%20Kingdom%22&description_type=text"),
-                Headers =
+                var request = new HttpRequestMessage
                 {
-                    { "x-rapidapi-key", _rapidApiKey },
-                    { "x-rapidapi-host", "active-jobs-db.p.rapidapi.com" },
-                },
-            };
+                    Method = HttpMethod.Get,
+                    RequestUri = new Uri("https://active-jobs-db.p.rapidapi.com/active-ats-24h?limit=10&offset=0&title_filter=%22Data%20Engineer%22&location_filter=%22United%20Kingdom%22&description_type=text"),
+                    Headers =
+                    {
+                        { "x-rapidapi-key", _rapidApiKey },
+                        { "x-rapidapi-host", "active-jobs-db.p.rapidapi.com" },
+                    },
+                };
 
-            using (var response = await client.SendAsync(request))
-            {
-                response.EnsureSuccessStatusCode();
-                var body = await response.Content.ReadAsStringAsync();
-                var jobs = JsonConvert.DeserializeObject<List<Job>>(body);
-
-                if (jobs != null && jobs.Count > 0)
+                using (var response = await client.SendAsync(request, stoppingToken)) // Pass cancellation token
                 {
-                    jobs.ForEach(j => j.DateAdded = DateTime.UtcNow); //Set the date for each job.
-                    await _jobRepository.AddJobsAsync(jobs);
-                    _logger.LogInformation($"Added {jobs.Count} jobs to the database.");
+                    response.EnsureSuccessStatusCode();
+                    var body = await response.Content.ReadAsStringAsync();
+                    var jobs = JsonConvert.DeserializeObject<List<Job>>(body);
 
-                } else {
-                    _logger.LogInformation("No jobs found");
+                    if (jobs != null)
+                    {
+                        foreach (var job in jobs)
+                        {
+                            job.DateAdded = DateTime.UtcNow;
+                            await jobRepository.AddJobsAsync(job); // Use repository from scope
+                        }
+                        _logger.LogInformation($"{jobs.Count} jobs added to database");
+                    }
+                    else
+                    {
+                        _logger.LogInformation("No jobs found");
+                    }
                 }
             }
         }
