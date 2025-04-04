@@ -1,0 +1,11 @@
+{
+  "name": "puppeteer-worker",
+  "version": "1.0.0",
+  "description": "scrape website data",
+  "main": "index.js",
+  "author": "me",
+  "license": "MIT",
+  "dependencies": {
+    "puppeteer": "^24.6.0"
+  }
+}
