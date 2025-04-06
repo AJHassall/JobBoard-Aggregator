@@ -1,7 +1,9 @@
 const puppeteer = require('puppeteer');
 
 (async () => {
-  const browser = await puppeteer.launch({ headless: 'new' });
+  const browser = await puppeteer.launch({ headless: 'new',
+    args: ['--no-sandbox', '--disable-setuid-sandbox'], // Added these args
+   });
   const page = await browser.newPage();
   await page.goto('https://en.wikipedia.org/wiki/Main_Page');
 

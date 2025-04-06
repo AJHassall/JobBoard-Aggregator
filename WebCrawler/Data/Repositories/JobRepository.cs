@@ -16,11 +16,42 @@ namespace WebCrawler.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task AddJobsAsync(Job job)
+        public Task<Job> AddJobAsync(Job job)
         {
-            await _dbContext.Jobs.AddAsync(job);
-            await _dbContext.SaveChangesAsync();
-
+            throw new NotImplementedException();
         }
+
+        public Task<IEnumerable<Job>> AddJobsAsync(IEnumerable<Job> jobs)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteJobAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        // public async Task AddJobsAsync(Job job)
+        // {
+        //     await _dbContext.Jobs.AddAsync(job);
+        //     await _dbContext.SaveChangesAsync();
+
+        // }
+
+        public Task<IEnumerable<Job>> GetAllJobsAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Job> GetJobByIdAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Job> UpdateJobAsync(Job job)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

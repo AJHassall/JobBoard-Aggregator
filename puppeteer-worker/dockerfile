@@ -2,11 +2,9 @@ FROM ghcr.io/puppeteer/puppeteer:latest
 
 WORKDIR /app
 
-RUN npm install -g yarn
+COPY package*.json ./
 
-COPY package*.json yarn.lock ./
-
-RUN yarn install
+RUN npm install
 
 COPY . .
 
