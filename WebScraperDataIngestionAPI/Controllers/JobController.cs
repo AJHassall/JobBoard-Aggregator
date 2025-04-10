@@ -1,9 +1,9 @@
 using JobBoardAggregator.Models;
 using Microsoft.AspNetCore.Mvc;
-using WebCrawler;
-using WebCrawler.Repositories;
+using WebScraperDataIngestionAPI;
+using WebScraperDataIngestionAPI.Repositories;
 
-namespace WebCrawler.Controllers
+namespace WebScraperDataIngestionAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]

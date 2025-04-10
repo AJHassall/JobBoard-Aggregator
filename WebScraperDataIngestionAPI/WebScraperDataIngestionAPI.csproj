@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>dotnet-WebCrawler-f6690b07-38af-43db-822e-3806c5d59cbb</UserSecretsId>
+    <UserSecretsId>dotnet-WebScraperDataIngestionAPI-f6690b07-38af-43db-822e-3806c5d59cbb</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

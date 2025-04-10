@@ -1,4 +1,4 @@
-namespace WebCrawler;
+namespace WebScraperDataIngestionAPI;
 
 public class Worker : BackgroundService
 {

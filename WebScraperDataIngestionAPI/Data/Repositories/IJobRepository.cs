@@ -1,7 +1,7 @@
 using JobBoardAggregator.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace WebCrawler.Repositories
+namespace WebScraperDataIngestionAPI.Repositories
 {
     public interface IJobRepository
     {

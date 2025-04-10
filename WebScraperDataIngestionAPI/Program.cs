@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using WebCrawler;
-using WebCrawler.Repositories;
+using WebScraperDataIngestionAPI;
+using WebScraperDataIngestionAPI.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
