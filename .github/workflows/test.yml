@@ -1,0 +1,32 @@
+name: Run WebScraperDataIngestionApiTests
+
+on:
+  push:
+    branches:
+      - main # or your development branch, adjust as needed
+  pull_request:
+    branches:
+      - main # or your development branch, adjust as needed
+
+jobs:
+  test:
+    runs-on: self-hosted 
+    labels: [ARM64] 
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up .NET Core (if applicable)
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x' # Or your .NET version
+
+      - name: Install dependencies (if applicable)
+        run: dotnet restore WebScraperDataIngestionApiTests/WebScraperDataIngestionApiTests.csproj
+
+      - name: Build project
+        run: dotnet build WebScraperDataIngestionApiTests/WebScraperDataIngestionApiTests.csproj --configuration Release 
+
+      - name: Run tests
+        run: dotnet test WebScraperDataIngestionApiTests/WebScraperDataIngestionApiTests.csproj --configuration Release --no-build --verbosity normal
