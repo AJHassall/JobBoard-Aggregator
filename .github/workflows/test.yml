@@ -3,10 +3,10 @@ name: Run WebScraperDataIngestionApiTests
 on:
   push:
     branches:
-      - main # or your development branch, adjust as needed
+      - main 
   pull_request:
     branches:
-      - main # or your development branch, adjust as needed
+      - main
 
 jobs:
   test:
@@ -18,10 +18,14 @@ jobs:
 
       - name: Set up .NET Core (if applicable)
         uses: actions/setup-dotnet@v4
+        # https://github.com/actions/setup-dotnet/issues/327
+        # container does not have permission to build in /usr/shared build in app directory instead
+        # the app dir is defined in the docker file of my runner
+        # i need to change that
         env:
           DOTNET_INSTALL_DIR: "/app/deps"
         with:
-          dotnet-version: '8.0.x' # Or your .NET version
+          dotnet-version: '8.0.x' 
 
       - name: Install dependencies (if applicable)
         run: dotnet restore WebScraperDataIngestionApiTests/WebScraperDataIngestionApiTests.csproj
