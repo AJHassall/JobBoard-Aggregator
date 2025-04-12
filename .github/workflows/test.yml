@@ -18,6 +18,8 @@ jobs:
 
       - name: Set up .NET Core (if applicable)
         uses: actions/setup-dotnet@v4
+        env:
+          DOTNET_INSTALL_DIR: "/dev/actions-runner/deps"
         with:
           dotnet-version: '8.0.x' # Or your .NET version
 
