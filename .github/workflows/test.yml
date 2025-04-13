@@ -3,20 +3,27 @@ name: Run WebScraperDataIngestionApiTests
 on:
   push:
     branches:
-      - main 
+      - main
   pull_request:
     branches:
       - main
 
 jobs:
   test:
-    runs-on: self-hosted 
-
+    runs-on: self-hosted
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up .NET Core (if applicable)
+      - name: Cache .NET installation
+        id: cache-dotnet
+        uses: actions/cache@v3
+        with:
+          path: /app/deps # Use the same path as DOTNET_INSTALL_DIR
+          key: ${{ runner.os }}-dotnet-${{ hashFiles('global.json') }} # Cache based on global.json
+
+      - name: Set up .NET Core
+        if: steps.cache-dotnet.outputs.cache-hit != 'true'
         uses: actions/setup-dotnet@v4
         # https://github.com/actions/setup-dotnet/issues/327
         # container does not have permission to build in /usr/shared build in app directory instead
@@ -25,13 +32,13 @@ jobs:
         env:
           DOTNET_INSTALL_DIR: "/app/deps"
         with:
-          dotnet-version: '8.0.x' 
+          dotnet-version: '8.0.x'
 
-      - name: Install dependencies (if applicable)
+      - name: Install dependencies
         run: dotnet restore WebScraperDataIngestionApiTests/WebScraperDataIngestionApiTests.csproj
 
       - name: Build project
-        run: dotnet build WebScraperDataIngestionApiTests/WebScraperDataIngestionApiTests.csproj --configuration Release 
+        run: dotnet build WebScraperDataIngestionApiTests/WebScraperDataIngestionApiTests.csproj --configuration Release
 
       - name: Run tests
         run: dotnet test WebScraperDataIngestionApiTests/WebScraperDataIngestionApiTests.csproj --configuration Release --no-build --verbosity normal
