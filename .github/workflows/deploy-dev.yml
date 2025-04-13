@@ -6,7 +6,15 @@ on:
     branches:
       - main
 
+
+
 jobs:
+  validate: # Add a job with no dependencies
+    runs-on: self-hosted
+    steps:
+      - name: Validate workflow
+        run: echo "Workflow validation successful."
+
   deploy:
     runs-on: self-hosted
     needs: test
