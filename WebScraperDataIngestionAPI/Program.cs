@@ -6,14 +6,20 @@ using WebScraperDataIngestionAPI.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddDbContext<JobDbContext>(options =>
-    options.UseInMemoryDatabase("ContactManagementDb"));
+string connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING");
 
+if (string.IsNullOrEmpty(connectionString))
+{
+    // Handle the case where the connection string is missing (e.g., log an error, use a default)
+    Console.WriteLine("Warning: DATABASE_CONNECTION_STRING is not set.");
+}
+
+builder.Services.AddDbContext<JobDbContext>(options =>
+    options.UseNpgsql(connectionString));
 // Add Repository
 builder.Services.AddScoped<IJobRepository, JobRepository>();
 
-builder.Services.AddControllers(); // Add controllers
+builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -30,8 +36,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization(); // If you use auth.
+app.UseAuthorization();
 
-app.MapControllers(); // Map controllers
+app.MapControllers(); 
 
 app.Run();
