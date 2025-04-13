@@ -14,13 +14,13 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Debug secrets
-        run: echo DEV_SERVER_HOST:"${{ secrets.DEV_SERVER_HOST }}"
-        
+        run: echo "DEV_SERVER_HOST: ${{ dev.DEV_SERVER_HOST }}"
+
       - name: Deploy to dev server
         uses: appleboy/ssh-action@v1.0.0
         with:
-          host: ${{ secrets.DEV_SERVER_HOST }}
-          username: ${{ secrets.DEV_SERVER_USER }}
-          key: ${{ secrets.DEV_SERVER_KEY }}
+          host: ${{ dev.DEV_SERVER_HOST }}
+          username: ${{ dev.DEV_SERVER_USER }}
+          key: ${{ dev.DEV_SERVER_KEY }}
           script: |
             whoami
