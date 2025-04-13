@@ -3,7 +3,7 @@ name: Deploy to Dev
 on:
   push:
     branches:
-      - main
+      - dev
 
 jobs:
 
@@ -20,9 +20,4 @@ jobs:
           username: ${{ secrets.DEV_SERVER_USER }}
           key: ${{ secrets.DEV_SERVER_KEY }}
           script: |
-            cd /home/devuser/app/ # Adjust path as needed.
-            docker compose -f docker-compose.yml down
-            docker compose -f docker-compose.yml up -d
-            docker compose exec app dotnet ef database update
-            docker compose exec runner curl http://app:80/
-            docker image prune -a -f
+            whoami
