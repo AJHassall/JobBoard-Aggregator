@@ -34,6 +34,10 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
+      - name: Add .NET to PATH (if cached)
+        if: steps.cache-dotnet.outputs.cache-hit == 'true'
+        run: echo "export PATH=/app/deps:$PATH" >> $GITHUB_ENV
+        
       - name: Install dependencies
         run: dotnet restore WebScraperDataIngestionApiTests/WebScraperDataIngestionApiTests.csproj
 
