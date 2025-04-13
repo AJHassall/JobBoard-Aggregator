@@ -36,7 +36,7 @@ jobs:
 
       - name: Add .NET to PATH (if cached)
         if: steps.cache-dotnet.outputs.cache-hit == 'true'
-        run: export PATH="/app/deps:$PATH" 
+        run: echo "/app/deps"  >> $GITHUB_PATH
         
       - name: Install dependencies
         run: dotnet restore WebScraperDataIngestionApiTests/WebScraperDataIngestionApiTests.csproj
