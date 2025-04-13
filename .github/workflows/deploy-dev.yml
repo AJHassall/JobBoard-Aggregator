@@ -15,5 +15,5 @@ jobs:
       - name: Deploy to dev server
         run: |
           ssh -i ${{ secrets.DEV_SERVER_KEY }} ${{ secrets.DEV_SERVER_USER }}@${{ secrets.DEV_SERVER_HOST }} << EOF
-            whoami
+            docker -v
           EOF
