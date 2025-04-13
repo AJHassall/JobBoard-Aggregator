@@ -6,14 +6,21 @@ on:
       - dev
 
 jobs:
+
   deploy:
     runs-on: self-hosted
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Debug secrets
+        run: echo "DEV_SERVER_HOST: ${{ secrets.DEV_SERVER_HOST }}"
+
       - name: Deploy to dev server
-        run: |
-          ssh -i ${{ secrets.DEV_SERVER_KEY }} ${{ secrets.DEV_SERVER_USER }}@${{ secrets.DEV_SERVER_HOST }} << EOF
-            docker -v
-          EOF
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.DEV_SERVER_HOST }}
+          username: ${{ secrets.DEV_SERVER_USER }}
+          key: ${{ secrets.DEV_SERVER_KEY }}
+          script: |
+            whoami
