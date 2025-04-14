@@ -7,21 +7,23 @@ on:
 
 jobs:
 
-  deploy:
+ deploy:
     runs-on: self-hosted
-    environment: dev 
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Debug secrets
-        run: echo DEV_SERVER_HOST:"${{ secrets.DEV_SERVER_HOST }}"
+      - name: Docker Compose Down
+        run: docker-compose down
+        working-directory: ./WebScraperDataIngestionAPI
 
-      - name: Deploy to dev server
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.DEV_SERVER_HOST }}
-          username: ${{ secrets.DEV_SERVER_USER }}
-          key: ${{ secrets.DEV_SERVER_KEY }}
-          script: |
-            whoami
+      - name: Docker Compose Up
+        run: docker-compose up -d
+        working-directory: ./api-WebScraperDataIngestionAPI # Specify the subdirectory
+
+      # - name: Health Check
+      #   run: curl http://localhost:your_api_port/health
+
+      # - name: Docker Logs
+      #   run: docker logs your_api_container_name
