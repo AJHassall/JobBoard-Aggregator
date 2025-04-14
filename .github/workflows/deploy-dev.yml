@@ -6,8 +6,7 @@ on:
       - dev
 
 jobs:
-
- deploy:
+  deploy:
     runs-on: self-hosted
 
     steps:
@@ -19,11 +18,11 @@ jobs:
         working-directory: ./WebScraperDataIngestionAPI
 
       - name: Docker Compose Up
-        run: docker compose up -d
-        working-directory: ./WebScraperDataIngestionAPI # Specify the subdirectory
-
-      # - name: Health Check
-      #   run: curl http://localhost:your_api_port/health
-
-      # - name: Docker Logs
-      #   run: docker logs your_api_container_name
+        run: |
+          docker compose up -d \
+            --build \
+            --env-file <(echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}") \
+            --env-file <(echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}") \
+            --env-file <(echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}") \
+            --env-file <(echo "DATABASE_CONNECTION_STRING=Host=db;Database=${{ secrets.POSTGRES_DB }};Username=${{ secrets.POSTGRES_USER }};Password=${{ secrets.POSTGRES_PASSWORD }}")
+        working-directory: ./WebScraperDataIngestionAPI
