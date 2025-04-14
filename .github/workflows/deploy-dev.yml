@@ -20,7 +20,7 @@ jobs:
 
       - name: Docker Compose Up
         run: docker-compose up -d
-        working-directory: ./api-WebScraperDataIngestionAPI # Specify the subdirectory
+        working-directory: ./WebScraperDataIngestionAPI # Specify the subdirectory
 
       # - name: Health Check
       #   run: curl http://localhost:your_api_port/health
