@@ -6,13 +6,40 @@ using WebScraperDataIngestionAPI.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-string connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING");
-
-if (string.IsNullOrEmpty(connectionString))
+string POSTGRES_USER = Environment.GetEnvironmentVariable("POSTGRES_USER");
+if (string.IsNullOrEmpty(POSTGRES_USER))
 {
-    // Handle the case where the connection string is missing (e.g., log an error, use a default)
-    Console.WriteLine("Warning: DATABASE_CONNECTION_STRING is not set.");
+    POSTGRES_USER = builder.Configuration.GetSection("Database")["POSTGRES_USER"];
+    Console.WriteLine(POSTGRES_USER);
+
 }
+
+string POSTGRES_PASSWORD = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD");
+if (string.IsNullOrEmpty(POSTGRES_PASSWORD))
+{
+    POSTGRES_PASSWORD = POSTGRES_USER = builder.Configuration.GetSection("Database")["POSTGRES_PASSWORD"];
+    Console.WriteLine(POSTGRES_PASSWORD);
+
+
+}
+
+string POSTGRES_DB = Environment.GetEnvironmentVariable("POSTGRES_DB");
+if (string.IsNullOrEmpty(POSTGRES_DB))
+{
+    POSTGRES_DB = POSTGRES_USER = builder.Configuration.GetSection("Database")["POSTGRES_DB"];
+    Console.WriteLine(POSTGRES_DB);
+
+}
+
+string POSTGRES_HOST = Environment.GetEnvironmentVariable("POSTGRES_HOST");
+if (string.IsNullOrEmpty(POSTGRES_HOST))
+{
+    POSTGRES_HOST = POSTGRES_HOST = builder.Configuration.GetSection("Database")["POSTGRES_HOST"];
+    Console.WriteLine(POSTGRES_HOST);
+
+}
+string connectionString = $"Host={POSTGRES_HOST};Port={5432};Username={POSTGRES_USER};Password={POSTGRES_PASSWORD};Database={POSTGRES_DB};";
+
 
 builder.Services.AddDbContext<JobDbContext>(options =>
     options.UseNpgsql(connectionString));
@@ -25,7 +52,14 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<JobDbContext>();
+    dbContext.Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -38,6 +72,6 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-app.MapControllers(); 
+app.MapControllers();
 
 app.Run();

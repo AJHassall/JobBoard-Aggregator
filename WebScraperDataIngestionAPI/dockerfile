@@ -3,10 +3,19 @@ WORKDIR /app
 COPY *.csproj ./
 RUN dotnet restore
 COPY . ./
-RUN dotnet publish -c Release -o out
 
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
+RUN dotnet publish WebScraperDataIngestionAPI.csproj -c Release -o /app/out
+# Use the SDK image for the runtime as well
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS runtime
 WORKDIR /app
+# Copy the .csproj file to the runtime image BEFORE copying the published output
+COPY *.csproj ./
+# Copy the published output
 COPY --from=build /app/out ./
+
+# Create an entrypoint script to apply migrations and then run the app
+COPY entrypoint.sh /app/
+RUN chmod +x /app/entrypoint.sh
+
 EXPOSE 80
-ENTRYPOINT ["dotnet", "WebScraperDataIngestionAPI.dll"]
+ENTRYPOINT ["/app/entrypoint.sh"]
