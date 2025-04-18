@@ -21,6 +21,10 @@ jobs:
           echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> .env
         working-directory: ./WebScraperDataIngestionAPI
 
+      - name: Docker Compose Down
+        run: docker compose down
+        working-directory: ./WebScraperDataIngestionAPI
+
       - name: Debug Print .env file content
         run: cat .env
         working-directory: ./WebScraperDataIngestionAPI
