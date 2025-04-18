@@ -3,8 +3,8 @@ WORKDIR /app
 COPY *.csproj ./
 RUN dotnet restore
 COPY . ./
-RUN dotnet publish -c Release -o out
 
+RUN dotnet publish WebScraperDataIngestionAPI.csproj -c Release -o /app/out
 # Use the SDK image for the runtime as well
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS runtime
 WORKDIR /app
@@ -12,10 +12,6 @@ WORKDIR /app
 COPY *.csproj ./
 # Copy the published output
 COPY --from=build /app/out ./
-
-# Install the Entity Framework Core tools globally in the runtime image
-RUN dotnet tool install --global dotnet-ef
-ENV PATH="$PATH:/root/.dotnet/tools"
 
 # Create an entrypoint script to apply migrations and then run the app
 COPY entrypoint.sh /app/
