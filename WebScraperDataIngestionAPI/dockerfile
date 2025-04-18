@@ -12,6 +12,7 @@ COPY --from=build /app/out ./
 
 # Install the Entity Framework Core tools globally in the runtime image
 RUN dotnet tool install --global dotnet-ef
+ENV PATH="$PATH:/root/.dotnet/tools"
 
 # Create an entrypoint script to apply migrations and then run the app
 COPY entrypoint.sh /app/

@@ -9,16 +9,16 @@ var builder = WebApplication.CreateBuilder(args);
 string POSTGRES_USER = Environment.GetEnvironmentVariable("POSTGRES_USER");
 if (string.IsNullOrEmpty(POSTGRES_USER))
 {
-    Console.WriteLine("Warning: POSTGRES_USER is not set.");
     POSTGRES_USER = builder.Configuration.GetSection("Database")["POSTGRES_USER"];
+    Console.WriteLine(POSTGRES_USER);
 
 }
 
 string POSTGRES_PASSWORD = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD");
 if (string.IsNullOrEmpty(POSTGRES_PASSWORD))
 {
-    Console.WriteLine("Warning: POSTGRES_USER is not set.");
     POSTGRES_PASSWORD = POSTGRES_USER = builder.Configuration.GetSection("Database")["POSTGRES_PASSWORD"];
+    Console.WriteLine(POSTGRES_PASSWORD);
 
 
 }
@@ -26,16 +26,16 @@ if (string.IsNullOrEmpty(POSTGRES_PASSWORD))
 string POSTGRES_DB = Environment.GetEnvironmentVariable("POSTGRES_DB");
 if (string.IsNullOrEmpty(POSTGRES_DB))
 {
-    Console.WriteLine("Warning: POSTGRES_USER is not set.");
     POSTGRES_DB = POSTGRES_USER = builder.Configuration.GetSection("Database")["POSTGRES_DB"];
+    Console.WriteLine(POSTGRES_DB);
 
 }
 
 string POSTGRES_HOST = Environment.GetEnvironmentVariable("POSTGRES_HOST");
 if (string.IsNullOrEmpty(POSTGRES_HOST))
 {
-    Console.WriteLine("Warning: POSTGRES_HOST is not set.");
     POSTGRES_HOST = POSTGRES_USER = builder.Configuration.GetSection("Database")["POSTGRES_HOST"];
+    Console.WriteLine(POSTGRES_HOST);
 
 }
 string connectionString = $"Host={POSTGRES_HOST};Port={5432};Username={POSTGRES_USER};Password={POSTGRES_PASSWORD};Database={POSTGRES_DB};";
