@@ -6,13 +6,40 @@ using WebScraperDataIngestionAPI.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
-string connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING");
-
-if (string.IsNullOrEmpty(connectionString))
+string POSTGRES_USER = Environment.GetEnvironmentVariable("POSTGRES_USER");
+if (string.IsNullOrEmpty(POSTGRES_USER))
 {
-    // Handle the case where the connection string is missing (e.g., log an error, use a default)
-    Console.WriteLine("Warning: DATABASE_CONNECTION_STRING is not set.");
+    Console.WriteLine("Warning: POSTGRES_USER is not set.");
+    POSTGRES_USER = builder.Configuration.GetSection("Database")["POSTGRES_USER"];
+
 }
+
+string POSTGRES_PASSWORD = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD");
+if (string.IsNullOrEmpty(POSTGRES_PASSWORD))
+{
+    Console.WriteLine("Warning: POSTGRES_USER is not set.");
+    POSTGRES_PASSWORD = POSTGRES_USER = builder.Configuration.GetSection("Database")["POSTGRES_PASSWORD"];
+
+
+}
+
+string POSTGRES_DB = Environment.GetEnvironmentVariable("POSTGRES_DB");
+if (string.IsNullOrEmpty(POSTGRES_DB))
+{
+    Console.WriteLine("Warning: POSTGRES_USER is not set.");
+    POSTGRES_DB = POSTGRES_USER = builder.Configuration.GetSection("Database")["POSTGRES_DB"];
+
+}
+
+string POSTGRES_HOST = Environment.GetEnvironmentVariable("POSTGRES_HOST");
+if (string.IsNullOrEmpty(POSTGRES_HOST))
+{
+    Console.WriteLine("Warning: POSTGRES_HOST is not set.");
+    POSTGRES_HOST = POSTGRES_USER = builder.Configuration.GetSection("Database")["POSTGRES_HOST"];
+
+}
+string connectionString = $"Host={POSTGRES_HOST};Port={5432};Username={POSTGRES_USER};Password={POSTGRES_PASSWORD};Database={POSTGRES_DB};";
+
 
 builder.Services.AddDbContext<JobDbContext>(options =>
     options.UseNpgsql(connectionString));
@@ -38,6 +65,6 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-app.MapControllers(); 
+app.MapControllers();
 
 app.Run();
