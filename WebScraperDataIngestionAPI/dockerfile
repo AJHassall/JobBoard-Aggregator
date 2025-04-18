@@ -5,10 +5,17 @@ RUN dotnet restore
 COPY . ./
 RUN dotnet publish -c Release -o out
 
-RUN dotnet ef database update --project WebScraperDataIngestionAPI.csproj --startup-project WebScraperDataIngestionAPI.csproj 
-
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
+# Use the SDK image for the runtime as well
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS runtime
 WORKDIR /app
 COPY --from=build /app/out ./
+
+# Install the Entity Framework Core tools globally in the runtime image
+RUN dotnet tool install --global dotnet-ef
+
+# Create an entrypoint script to apply migrations and then run the app
+COPY entrypoint.sh /app/
+RUN chmod +x /app/entrypoint.sh
+
 EXPOSE 80
-ENTRYPOINT ["dotnet", "WebScraperDataIngestionAPI.dll"]
+ENTRYPOINT ["/app/entrypoint.sh"]
