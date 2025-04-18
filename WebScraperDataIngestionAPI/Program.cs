@@ -34,7 +34,7 @@ if (string.IsNullOrEmpty(POSTGRES_DB))
 string POSTGRES_HOST = Environment.GetEnvironmentVariable("POSTGRES_HOST");
 if (string.IsNullOrEmpty(POSTGRES_HOST))
 {
-    POSTGRES_HOST = POSTGRES_USER = builder.Configuration.GetSection("Database")["POSTGRES_HOST"];
+    POSTGRES_HOST = POSTGRES_HOST = builder.Configuration.GetSection("Database")["POSTGRES_HOST"];
     Console.WriteLine(POSTGRES_HOST);
 
 }
