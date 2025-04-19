@@ -1,5 +1,4 @@
-FROM ghcr.io/puppeteer/puppeteer:latest  AS builder
-
+FROM --platform=linux/arm64 ghcr.io/puppeteer/puppeteer:latest AS builder
 # Set the working directory in the container
 WORKDIR /app
 
