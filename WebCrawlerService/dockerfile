@@ -1,32 +1,51 @@
-FROM canardconfit/puppeteer-docker:puppeteer-23.10.1-arm64 AS builder
-WORKDIR /app
+# Ensure an up-to-date version of Chromium
+# can be installed (solves Problem 2)
+FROM node:22-bullseye AS builder
 
-# Copy package.json and package-lock.json (if you have one)
-COPY --chown=pptruser:pptruser  package*.json ./
+WORKDIR /home/app-user/app
 
-# Install app dependencies
+COPY package*.json ./
+COPY index.js ./
+
+RUN apt-get update
+RUN apt-get install chromium -y
+
+ENV HOME=/home/app-user
+RUN useradd -m -d $HOME -s /bin/bash app-user
+RUN mkdir -p $HOME/app
+RUN chown -R app-user:app-user $HOME
+
+# Run the container as a non-privileged user (discussed in Problem 3)
+USER app-user
+
+# Make `npm install` faster by skipping
+# downloading default Chromium (discussed in Problem 1)
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 RUN npm install
 
-# Copy the application source code
-COPY --chown=pptruser:pptruser  . .
+RUN chown -R app-user:app-user $HOME/app
 
-# Build the application using the build script defined in package.json
 RUN npm run build
 
 # --- Production Stage ---
-FROM canardconfit/puppeteer-docker:puppeteer-23.10.1-arm64 AS production
+FROM node:22-bullseye
 
-# Set the working directory
-WORKDIR /app
+ENV HOME=/home/app-user
+RUN useradd -m -d $HOME -s /bin/bash app-user
+RUN mkdir -p $HOME/app
+WORKDIR $HOME/app
+USER app-user
 
-# Copy only the necessary files from the builder stage
-COPY --chown=pptruser:pptruser  --from=builder /app/dist ./dist
-COPY --chown=pptruser:pptruser  --from=builder /app/node_modules ./node_modules
-COPY --chown=pptruser:pptruser  --from=builder /app/package*.json ./
+COPY --chown=app-user:app-user --from=builder /home/app-user/app/dist ./dist
+COPY --chown=app-user:app-user --from=builder /home/app-user/app/node_modules ./node_modules
+COPY package*.json ./
 
-# Set environment variables (if needed)
-# ENV NODE_ENV production
-# ENV PORT 3000
+# Install Chromium in the production stage as well, if needed by your application
+RUN apt-get update && apt-get install -y chromium
 
-# Command to run the application
+# Make `npm install` faster by skipping
+# downloading default Chromium
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+RUN npm install --production
+
 CMD ["node", "dist/index.js"]
