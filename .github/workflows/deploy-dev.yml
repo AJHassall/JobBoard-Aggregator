@@ -30,4 +30,7 @@ jobs:
       - name: Docker Compose Up
         run: docker compose --env-file .env up -d --build
 
+      - name: Get Docker Compose Logs for Webcrawler on Failure
+        if: failure()
+        run: docker compose logs webcrawler --timestamps
 
