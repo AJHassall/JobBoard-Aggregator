@@ -9,37 +9,20 @@ COPY --chown=app-user:app-user . .
 RUN apt-get update
 RUN apt-get install chromium -y
 
-ENV HOME=/home/app-user
-RUN useradd -m -d $HOME -s /bin/bash app-user
-RUN mkdir -p $HOME/app
-
-# Run the container as a non-privileged user (discussed in Problem 3)
-USER app-user
-
-# Make `npm install` faster by skipping
-# downloading default Chromium (discussed in Problem 1)
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 RUN npm install
 
-RUN chown -R app-user:app-user $HOME/app
+RUN chown -R app-user:app-user
 
 RUN npm run build
 
 # --- Production Stage ---
 FROM node:22-bullseye
 
-RUN useradd -m -d $HOME -s /bin/bash app-user
-RUN mkdir -p $HOME/app
-USER app-user
+COPY --from=builder . .
 
-COPY --chown=app-user:app-user --from=builder . .
-
-
-# Install Chromium in the production stage as well, if needed by your application
 RUN apt-get update && apt-get install -y chromium
 
-# Make `npm install` faster by skipping
-# downloading default Chromium
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 RUN npm install --production
 
