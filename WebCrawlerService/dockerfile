@@ -6,6 +6,8 @@ WORKDIR /home/app-user/app
 
 COPY package*.json ./
 COPY index.js ./
+COPY --chown=app-user:app-user . .
+
 
 RUN apt-get update
 RUN apt-get install chromium -y
@@ -35,6 +37,8 @@ RUN useradd -m -d $HOME -s /bin/bash app-user
 RUN mkdir -p $HOME/app
 WORKDIR $HOME/app
 USER app-user
+
+COPY --chown=app-user:app-user --from=builder . .
 
 COPY --chown=app-user:app-user --from=builder /home/app-user/app/dist ./dist
 COPY --chown=app-user:app-user --from=builder /home/app-user/app/node_modules ./node_modules
