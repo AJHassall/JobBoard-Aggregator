@@ -1,5 +1,4 @@
-FROM --platform=linux/arm64 ghcr.io/puppeteer/puppeteer:latest AS builder
-# Set the working directory in the container
+FROM canardconfit/puppeteer-docker:puppeteer-23.10.1-arm64 AS builder
 WORKDIR /app
 
 # Copy package.json and package-lock.json (if you have one)
@@ -15,7 +14,7 @@ COPY --chown=pptruser:pptruser  . .
 RUN npm run build
 
 # --- Production Stage ---
-FROM ghcr.io/puppeteer/puppeteer:latest AS production
+FROM canardconfit/puppeteer-docker:puppeteer-23.10.1-arm64 AS production
 
 # Set the working directory
 WORKDIR /app
