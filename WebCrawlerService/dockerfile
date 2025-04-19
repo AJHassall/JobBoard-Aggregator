@@ -8,7 +8,7 @@ RUN useradd -m -d $HOME -s /bin/bash app-user
 RUN mkdir -p $HOME/app
 WORKDIR $HOME/app
 COPY package*.json ./
-COPY src/* ./src
+COPY src ./src
 RUN chown -R app-user:app-user $HOME
 # Run the container as a non-privileged user (discussed in Problem 3)
 USER app-user
@@ -16,4 +16,5 @@ USER app-user
 # downloading default Chromium (discussed in Problem 1)
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 RUN npm install
+RUN npm run build
 CMD ["node", "dist/index.js"]
