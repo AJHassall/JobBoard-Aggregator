@@ -16,35 +16,60 @@ namespace WebScraperDataIngestionAPI.Repositories
             _dbContext = dbContext;
         }
 
-        public Task<Job> AddJobAsync(Job job)
+        public async Task<Job> AddJobAsync(Job job)
         {
-            throw new NotImplementedException();
+            var _job = await _dbContext.Jobs.AddAsync(job);
+            await _dbContext.SaveChangesAsync();
+
+            return _job.Entity;
+        }
+        public async Task<IEnumerable<Job>> AddJobsAsync(IEnumerable<Job> jobs)
+        {
+            var trackedJobEntries = new List<Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<Job>>();
+
+            foreach (var job in jobs)
+            {
+                var trackedEntry = await _dbContext.Jobs.AddAsync(job);
+                trackedJobEntries.Add(trackedEntry);
+            }
+
+            await _dbContext.SaveChangesAsync();
+
+            // Return the tracked entities
+            return trackedJobEntries.Select(entry => entry.Entity).ToList();
         }
 
-        public Task<IEnumerable<Job>> AddJobsAsync(IEnumerable<Job> jobs)
+        public async Task DeleteJobAsync(int id)
         {
-            throw new NotImplementedException();
+            var jobToDelete = await _dbContext.Jobs.FindAsync(id);
+            if (jobToDelete != null)
+            {
+                _dbContext.Jobs.Remove(jobToDelete);
+                await _dbContext.SaveChangesAsync();
+            }
         }
 
-        public Task DeleteJobAsync(int id)
+        public async Task<IEnumerable<Job>> GetAllJobsAsync()
         {
-            throw new NotImplementedException();
+            return await _dbContext.Jobs.ToListAsync();
         }
 
-        public Task<IEnumerable<Job>> GetAllJobsAsync()
+
+        public async Task<Job> UpdateJobAsync(Job job)
         {
-            throw new NotImplementedException();
+            var existingJob = await _dbContext.Jobs.FindAsync(job.Id);
+            if (existingJob == null) return null;
+
+            existingJob.Title = job.Title;
+            existingJob.Description = job.Description;
+
+            await _dbContext.SaveChangesAsync();
+            return existingJob;
         }
 
-        public Task<Job> GetJobByIdAsync(int id)
+        public async Task<Job> GetJobByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _dbContext.Jobs.FindAsync(id);
         }
-
-        public Task<Job> UpdateJobAsync(Job job)
-        {
-            throw new NotImplementedException();
-        }
-
     }
 }

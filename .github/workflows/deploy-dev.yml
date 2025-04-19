@@ -27,10 +27,8 @@ jobs:
 
       - name: Debug Print .env file content
         run: cat .env
-        working-directory: ./WebScraperDataIngestionAPI
 
       - name: Docker Compose Up
         run: docker compose --env-file .env up -d --build
-        working-directory: ./WebScraperDataIngestionAPI
 
 
