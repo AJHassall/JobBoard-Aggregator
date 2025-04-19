@@ -4,10 +4,7 @@ FROM node:22-bullseye AS builder
 
 WORKDIR /home/app-user/app
 
-COPY package*.json ./
-COPY index.js ./
 COPY --chown=app-user:app-user . .
-
 
 RUN apt-get update
 RUN apt-get install chromium -y
@@ -15,7 +12,6 @@ RUN apt-get install chromium -y
 ENV HOME=/home/app-user
 RUN useradd -m -d $HOME -s /bin/bash app-user
 RUN mkdir -p $HOME/app
-RUN chown -R app-user:app-user $HOME
 
 # Run the container as a non-privileged user (discussed in Problem 3)
 USER app-user
@@ -32,17 +28,12 @@ RUN npm run build
 # --- Production Stage ---
 FROM node:22-bullseye
 
-ENV HOME=/home/app-user
 RUN useradd -m -d $HOME -s /bin/bash app-user
 RUN mkdir -p $HOME/app
-WORKDIR $HOME/app
 USER app-user
 
 COPY --chown=app-user:app-user --from=builder . .
 
-COPY --chown=app-user:app-user --from=builder /home/app-user/app/dist ./dist
-COPY --chown=app-user:app-user --from=builder /home/app-user/app/node_modules ./node_modules
-COPY package*.json ./
 
 # Install Chromium in the production stage as well, if needed by your application
 RUN apt-get update && apt-get install -y chromium
