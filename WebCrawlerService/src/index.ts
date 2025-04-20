@@ -1,6 +1,6 @@
 import client, { Connection, Channel, ChannelModel } from "amqplib";
 import mqConnection from "./RabbitMq"; 
-//import { runPuppeteer } from "./scraper";
+import { runPuppeteer } from "./LinkedInScraper";
 
 async function main() {
   try {
@@ -13,7 +13,7 @@ async function main() {
 
         if (typeof url === 'string' && url.trim() !== '') {
           console.log(`🚀 Starting Puppeteer for URL: ${url}`);
-          //const scrapedData = await runPuppeteer(url);
+          await runPuppeteer();
           console.log(`✅ Puppeteer finished for URL: ${url}`, "working");
         } else {
           console.error(`⚠️ Invalid URL received: ${message}`);

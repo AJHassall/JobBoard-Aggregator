@@ -7,7 +7,7 @@ using WebScraperDataIngestionAPI.Repositories;
 var builder = WebApplication.CreateBuilder(args);
 
 
-string connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING");
+string connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING")?? "";
 
 Console.WriteLine(connectionString);
 
