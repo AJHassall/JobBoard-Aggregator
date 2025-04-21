@@ -1,4 +1,4 @@
-import client, { Connection, Channel, ChannelModel } from "amqplib";
+import client, { Channel, ChannelModel } from "amqplib";
 import { rmqUser, rmqPass, rmqhost, NOTIFICATION_QUEUE } from "./config";
 
 type HandlerCB = (msg: string) => any;
