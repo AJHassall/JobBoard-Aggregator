@@ -1,8 +1,11 @@
 import mqConnection from "./RabbitMq"; 
 import { runPuppeteer } from "./LinkedInScraper";
+import { createWorker } from "./PuppeteerWorkers/WorkerFactory";
 
 async function main() {
-  await runPuppeteer();
+  await createWorker('premiumPicks').run;
+
+//  await runPuppeteer();
   // try {
   //   await mqConnection.connect();
 
