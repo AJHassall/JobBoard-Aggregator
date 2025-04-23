@@ -11,6 +11,8 @@ RUN chown -R app-user:app-user $HOME
 USER app-user
 
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
+
 RUN npm install
 RUN npm run build
 CMD ["node", "dist/index.js"]
