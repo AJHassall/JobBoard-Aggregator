@@ -1,8 +1,7 @@
-import client, { Connection, Channel, ChannelModel } from "amqplib";
+import client, { Channel, ChannelModel } from "amqplib";
 import { rmqUser, rmqPass, rmqhost, NOTIFICATION_QUEUE } from "./config";
 
 type HandlerCB = (msg: string) => any;
-
 
 class RabbitMQConnection {
   connection!: ChannelModel;
@@ -25,38 +24,44 @@ class RabbitMQConnection {
       console.log(`🛸 Created RabbitMQ Channel successfully`);
 
       this.connected = true;
-      console.log(`👂 RabbitMQ listener started for queue: ${NOTIFICATION_QUEUE}`);
-
-
+      console.log(
+        `👂 RabbitMQ listener started for queue: ${NOTIFICATION_QUEUE}`
+      );
     } catch (error) {
       console.error(error);
       console.error(`Not connected to MQ Server`);
     }
   }
 
-
   async consume(handleIncomingNotification: HandlerCB) {
-
     await this.channel.assertQueue(NOTIFICATION_QUEUE, {
       durable: true,
     });
+    await this.channel.prefetch(1);
 
     this.channel.consume(
       NOTIFICATION_QUEUE,
-      (msg) => {
+      async (msg) => {
         {
           if (!msg) {
             return console.error(`Invalid incoming message`);
           }
-          handleIncomingNotification(msg?.content?.toString());
-          this.channel.ack(msg);
+          let success = await handleIncomingNotification(
+            msg?.content?.toString()
+          );
+
+          if (success) {
+            this.channel.ack(msg);
+          }
+          else {
+            this.channel.nack(msg)
+          }
         }
       },
       {
         noAck: false,
       }
     );
-
   }
 }
 

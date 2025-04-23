@@ -4,20 +4,20 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-public class HourlyMessageSender : IHostedService, IDisposable
+public class SixHourMessageSender : IHostedService, IDisposable
 {
     private Timer _timer;
     private readonly RabbitMQProducerService _rabbitMQService;
     private readonly string _messageToSend;
 
-    public HourlyMessageSender(IConfiguration configuration)
+    public SixHourMessageSender(IConfiguration configuration)
     {
         var rabbitMqConfig = configuration.GetSection("RabbitMQ");
         var hostname = rabbitMqConfig["Hostname"];
         var username = rabbitMqConfig["Username"];
         var password = rabbitMqConfig["Password"];
         var queueName = rabbitMqConfig["NotificationQueue"];
-        _messageToSend = "dotnet24hrs";
+        _messageToSend = "premiumPicks";
 
         _rabbitMQService = new RabbitMQProducerService(hostname, username, password, queueName);
 
@@ -28,7 +28,7 @@ public class HourlyMessageSender : IHostedService, IDisposable
         Console.WriteLine("Hourly Message Sender Service started.");
         await _rabbitMQService.InitializeAsync();
         
-        _timer = new Timer(async (state) => await DoWork(state), null, TimeSpan.Zero, TimeSpan.FromHours(24));
+        _timer = new Timer(async (state) => await DoWork(state), null, TimeSpan.Zero, TimeSpan.FromHours(6));
         return;
     }
 

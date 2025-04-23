@@ -7,7 +7,7 @@ using WebScraperDataIngestionAPI.Repositories;
 var builder = WebApplication.CreateBuilder(args);
 
 
-string connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING");
+string connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING")?? "";
 
 Console.WriteLine(connectionString);
 
@@ -34,6 +34,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddHostedService<HourlyMessageSender>();
+builder.Services.AddHostedService<SixHourMessageSender>();
+
 
 
 var app = builder.Build();
