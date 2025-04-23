@@ -20,12 +20,11 @@ jobs:
           echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
           echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> .env
           echo "DATABASE_CONNECTION_STRING=${{ secrets.DATABASE_CONNECTION_STRING }}" >> .env
+          echo "LinkedInEmail=${{ secrets.LinkedInEmail }}" >> .env
+          echo "LinkedInPass=${{ secrets.LinkedInPass }}" >> .env
 
       - name: Docker Compose Down
         run: docker compose down
-
-      - name: Debug Print .env file content
-        run: cat .env
 
       - name: Docker Compose Up
         run: docker compose --env-file .env up -d --build

@@ -49,6 +49,9 @@ services:
       context: ./WebCrawlerService
       dockerfile: dockerfile
     restart: unless-stopped
+    environment:
+      LinkedInEmail: ${LinkedInEmail}
+      LinkedInPass: ${LinkedInPass}
     ports:
       - 3000:3000
     depends_on:

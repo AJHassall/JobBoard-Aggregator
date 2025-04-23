@@ -34,6 +34,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddHostedService<HourlyMessageSender>();
+builder.Services.AddHostedService<SixHourMessageSender>();
+
 
 
 var app = builder.Build();

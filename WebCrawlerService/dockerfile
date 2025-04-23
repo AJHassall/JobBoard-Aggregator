@@ -1,4 +1,4 @@
-FROM node:16-bullseye 
+FROM node:slim
 RUN apt-get update
 RUN apt-get install chromium -y
 ENV HOME=/home/app-user

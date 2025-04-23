@@ -26,7 +26,7 @@ while [[ $# -gt 0 ]]; do
       shift
       ;;
     --prod)
-      COMPOSE_FILE="docker-compose-api-prod.yml"
+      COMPOSE_FILE="docker-compose.yml"
       shift
       ;;
     --build)
