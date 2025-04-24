@@ -166,7 +166,6 @@ const ScrapeTopPicks = async function *(_page: Page): AsyncGenerator<OptionalJob
 
     for (const jobCard of jobCards) {
       try {
-        // Click the job card
         await jobCard.click();
         console.log("Clicked a job card.");
         const description = await page.$eval(
