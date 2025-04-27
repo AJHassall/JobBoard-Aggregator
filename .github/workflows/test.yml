@@ -3,8 +3,11 @@ name: Run WebScraperDataIngestionApiTests
 on:
   workflow_call:
 jobs:
+
   test:
     runs-on: self-hosted
+    environment: Dev
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

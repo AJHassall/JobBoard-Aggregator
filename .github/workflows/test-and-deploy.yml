@@ -5,12 +5,13 @@ on:
       - dev
 
 jobs:
+  runs-on: self-hosted
+  environment: Dev
   test:
-    runs-on: self-hosted
-    environment: Dev
+
     uses: ./.github/workflows/test.yml
+    deploy:
+
   deploy:
-    runs-on: self-hosted
-    environment: Dev
     needs: test
     uses: ./.github/workflows/deploy-dev.yml
