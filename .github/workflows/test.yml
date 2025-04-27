@@ -1,6 +1,7 @@
 name: Run WebScraperDataIngestionApiTests
-on:
 
+on:
+  workflow_call:
 jobs:
   test:
     runs-on: self-hosted
