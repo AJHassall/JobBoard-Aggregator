@@ -15,7 +15,7 @@ namespace JobBoardAggregator.Models
         public required string Url { get; set; }
         public DateTime DateAdded { get; internal set; }
 
-        Job(){
+        public Job(){
             DateAdded = DateTime.Now;
         }
     }
