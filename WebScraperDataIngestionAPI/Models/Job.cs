@@ -17,7 +17,7 @@ namespace JobBoardAggregator.Models
         public DateTime DateAdded { get; internal set; }
 
         public Job(){
-            DateAdded = DateTime.Now;
+            DateAdded = DateTime.UtcNow;
         }
     }
 }
