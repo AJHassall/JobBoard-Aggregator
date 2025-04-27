@@ -1,4 +1,6 @@
 name: Run WebScraperDataIngestionApiTests
+on:
+
 jobs:
   test:
     runs-on: self-hosted
