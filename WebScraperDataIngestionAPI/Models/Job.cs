@@ -13,6 +13,7 @@ namespace JobBoardAggregator.Models
         public required string Location { get; set; }
         public required string Description { get; set; }
         public required string Url { get; set; }
+        public required bool IsEasyApply { get; set; }
         public DateTime DateAdded { get; internal set; }
 
         public Job(){

@@ -57,12 +57,12 @@ async function* extractJobDetails(page: any): AsyncGenerator<OptionalJob> {
         const description = await page.$eval('.two-pane-serp-page__detail-view .show-more-less-html__markup', el => el.innerHTML);
         const url = await page.url(); // Get the URL of the detail view
 
-        yield { Title: title, Company: company, Location: location, Description: description, Url: url };
+        yield { Title: title, Company: company, Location: location, Description: description, Url: url ,IsEasyApply: false};
 
         await page.waitForSelector('.jobs-search__results-list > li .base-search-card__info', { timeout: 5000 }); // Wait for the list to reappear
       } else {
         console.warn('Could not find clickable element for job card.');
-        yield { Title: title, Company: company, Location: location, Description: null, Url: null };
+        yield { Title: title, Company: company, Location: location, Description: null, Url: null, IsEasyApply: false };
       }
     } catch (error) {
       console.error('Error processing job card:', error);

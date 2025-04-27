@@ -8,6 +8,7 @@ export interface Job{
  Location? : string| null,
  Description? : string| null,
  Url? : string | null
+ IsEasyApply: boolean
 }
 
 

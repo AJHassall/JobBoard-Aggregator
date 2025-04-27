@@ -188,6 +188,11 @@ const ScrapeTopPicks = async function *(_page: Page): AsyncGenerator<OptionalJob
           (el) => el.textContent
         );
 
+        const isEasyApply = await page.$eval(
+          " .jobs-apply-button--top-card span",
+          (el) => el.textContent.toLocaleLowerCase() === "easy apply"
+        );
+
 
         const job: Job = {
           Title: jobTitleText?.trim() || null,
@@ -195,6 +200,7 @@ const ScrapeTopPicks = async function *(_page: Page): AsyncGenerator<OptionalJob
           Url: page.url(),
           Company: company,
           Location: location,
+          IsEasyApply: isEasyApply,
         };
 
         yield job;
