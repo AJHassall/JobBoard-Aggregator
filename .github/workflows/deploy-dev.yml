@@ -4,7 +4,6 @@ on:
 jobs:
   deploy:
     runs-on: self-hosted
-    environment: Dev
 
     steps:
       - name: Checkout code
