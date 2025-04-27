@@ -3,14 +3,13 @@ on:
   push:
     branches:
       - dev
-
 jobs:
   test:
-    uses: ./.github/workflows/test.yml
-
+    uses: ./.github/workflows/test.yml # Corrected usage
 
   deploy:
     needs: test
-    environment: Dev
-    uses: ./.github/workflows/deploy-dev.yml
+    uses: ./.github/workflows/deploy.yml 
+
     secrets: inherit
+    environment: Dev
