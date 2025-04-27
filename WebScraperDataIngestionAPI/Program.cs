@@ -1,26 +1,26 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using WebScraperDataIngestionAPI;
 using WebScraperDataIngestionAPI.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
+string? POSTGRES_HOST = Environment.GetEnvironmentVariable("POSTGRES_HOST")?? builder.Configuration.GetSection("Database")["POSTGRES_HOST"];
+string? POSTGRES_PASSWORD = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD")?? builder.Configuration.GetSection("Database")["POSTGRES_PASSWORD"];
+string? POSTGRES_DB = Environment.GetEnvironmentVariable("POSTGRES_DB")?? builder.Configuration.GetSection("Database")["POSTGRES_DB"];
+string? POSTGRES_USER = Environment.GetEnvironmentVariable("POSTGRES_USER")?? builder.Configuration.GetSection("Database")["POSTGRES_USER"];
 
-string connectionString = Environment.GetEnvironmentVariable("DATABASE_CONNECTION_STRING")?? "";
+
+var sb = new NpgsqlConnectionStringBuilder();
+sb.Host = POSTGRES_HOST;
+sb.Database = POSTGRES_DB;
+sb.Username= POSTGRES_USER;
+sb.Password = POSTGRES_PASSWORD;
+string connectionString = sb.ConnectionString;
 
 Console.WriteLine(connectionString);
-
-if (string.IsNullOrEmpty(connectionString))
-{
-    string? POSTGRES_HOST = builder.Configuration.GetSection("Database")["POSTGRES_HOST"];
-    string? POSTGRES_PASSWORD = builder.Configuration.GetSection("Database")["POSTGRES_PASSWORD"];
-    string? POSTGRES_DB = builder.Configuration.GetSection("Database")["POSTGRES_DB"];
-    string? POSTGRES_USER = builder.Configuration.GetSection("Database")["POSTGRES_USER"];
-
-    connectionString = $"Host={POSTGRES_HOST};Port={5432};Username={POSTGRES_USER};Password={POSTGRES_PASSWORD};Database={POSTGRES_DB};";
-
-}
 
 builder.Services.AddDbContext<JobDbContext>(options =>
     options.UseNpgsql(connectionString));

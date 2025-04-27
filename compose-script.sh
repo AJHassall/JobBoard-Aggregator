@@ -50,7 +50,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 # Construct the Docker Compose command
-docker_compose_command="docker-compose -f $COMPOSE_FILE $COMMAND $BUILD_FLAG $DETACH_FLAG"
+docker_compose_command="docker compose -f $COMPOSE_FILE $COMMAND $BUILD_FLAG $DETACH_FLAG"
 
 echo "Running: $docker_compose_command"
 

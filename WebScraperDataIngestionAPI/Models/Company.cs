@@ -3,11 +3,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace JobBoardAggregator.Models
 {
-    public class Article
-    {
+    public class Company{
         [Key]
         public int Id {get; private set;}
-        public required string Text { get; set; }
+        public required string Name {get; set;}
 
     }
 }
