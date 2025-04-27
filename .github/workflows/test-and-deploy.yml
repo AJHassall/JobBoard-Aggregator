@@ -11,5 +11,6 @@ jobs:
     needs: test
     uses: ./.github/workflows/deploy.yml 
 
+    with:
+      environment: Dev
     secrets: inherit
-    environment: Dev
