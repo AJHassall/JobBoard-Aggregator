@@ -3,6 +3,9 @@ on:
   workflow_call:
 jobs:
   deploy:
+    runs-on: self-hosted
+    environment: Dev
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
