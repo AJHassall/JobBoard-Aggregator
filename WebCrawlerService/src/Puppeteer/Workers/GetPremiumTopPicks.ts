@@ -194,7 +194,7 @@ const ScrapeTopPicks = async function *(_page: Page): AsyncGenerator<OptionalJob
 
         const isEasyApply = await page.$eval(
           " .jobs-apply-button--top-card span",
-          (el) => el.textContent.toLocaleLowerCase() === "easy apply"
+          (el) => el.textContent.toLocaleLowerCase().includes("easy apply")
         );
 
 
