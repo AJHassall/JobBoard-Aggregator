@@ -1,14 +1,9 @@
 name: Run WebScraperDataIngestionApiTests
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
-
+  workflow_call:
 jobs:
+
   test:
     runs-on: self-hosted
     steps:

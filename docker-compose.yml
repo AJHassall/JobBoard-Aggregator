@@ -1,0 +1,74 @@
+services:
+  app:
+    container_name: job_api
+    build:
+      context: ./WebScraperDataIngestionAPI
+      dockerfile: dockerfile
+    image: api
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    environment:
+        POSTGRES_HOST: ${POSTGRES_HOST}
+        POSTGRES_USER: ${POSTGRES_USER}
+        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+        POSTGRES_DB: ${POSTGRES_DB}
+    restart: unless-stopped
+
+  db:
+    container_name: job_db
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}"]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  adminer:
+    image: adminer
+    restart: unless-stopped
+    ports:
+      - 8083:8080
+    depends_on:
+      - db
+
+  webcrawler:
+    container_name: webcrawler
+    build:
+      context: ./WebCrawlerService
+      dockerfile: dockerfile
+    restart: unless-stopped
+    environment:
+      LinkedInEmail: ${LinkedInEmail}
+      LinkedInPass: ${LinkedInPass}
+    ports:
+      - 3000:3000
+    depends_on:
+      rabbitmq:
+          condition: service_healthy # Wait for rabbitmq to be healthy
+
+  rabbitmq:
+      container_name: rabbitmq
+      image: rabbitmq:3-management
+      healthcheck:
+        test: ["CMD", "rabbitmqctl", "status"]
+        interval: 5s
+        timeout: 10s
+        retries: 5
+
+volumes:
+  db-data:
