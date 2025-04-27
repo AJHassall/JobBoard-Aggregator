@@ -10,7 +10,7 @@ jobs:
 
 
   deploy:
-    environment: Dev
     needs: test
+    environment: Dev
     uses: ./.github/workflows/deploy-dev.yml
     secrets: inherit
