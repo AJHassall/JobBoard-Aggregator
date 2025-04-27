@@ -6,7 +6,11 @@ on:
 
 jobs:
   test:
+    runs-on: self-hosted
+    environment: Dev
     uses: ./.github/workflows/test.yml
   deploy:
+    runs-on: self-hosted
+    environment: Dev
     needs: test
     uses: ./.github/workflows/deploy.yml
