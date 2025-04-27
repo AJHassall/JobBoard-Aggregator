@@ -1,10 +1,4 @@
-name: Deploy to Dev
-
-on:
-  push:
-    branches:
-      - dev
-
+name: Deploy
 jobs:
   deploy:
     runs-on: self-hosted
