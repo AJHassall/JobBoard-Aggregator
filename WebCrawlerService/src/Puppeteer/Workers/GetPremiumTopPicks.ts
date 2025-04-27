@@ -1,6 +1,6 @@
 import { Locator, Page } from "puppeteer";
 import { IWorker, OptionalJob } from "./IWorker";
-import { Job } from "../../utils/DataIngestionApi";
+import { Company, Job } from "../../utils/DataIngestionApi";
 
 export class GetPremiumTopPicks implements IWorker {
   async *run(page: Page): AsyncGenerator<OptionalJob> {
@@ -182,6 +182,10 @@ const ScrapeTopPicks = async function *(_page: Page): AsyncGenerator<OptionalJob
         const companyElement = await page.$('.job-details-jobs-unified-top-card__company-name');
         const company = companyElement ? await companyElement.evaluate(el => el.textContent.trim()) : null;
 
+        const Company: Company = {
+          Name: company
+        }
+
 
         const location = await page.$eval(
           " .job-details-jobs-unified-top-card__primary-description-container span:first-child span:first-child",
@@ -198,7 +202,7 @@ const ScrapeTopPicks = async function *(_page: Page): AsyncGenerator<OptionalJob
           Title: jobTitleText?.trim() || null,
           Description: description?.trim() || null,
           Url: page.url(),
-          Company: company,
+          Company: Company,
           Location: location,
           IsEasyApply: isEasyApply,
         };

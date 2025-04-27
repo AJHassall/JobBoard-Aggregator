@@ -4,12 +4,17 @@ const url = "http://job_api:8080";
 
 export interface Job{
  Title? : string | null,
- Company?: string | null,
+ Company?: Company | null,
  Location? : string| null,
  Description? : string| null,
  Url? : string | null
  IsEasyApply: boolean
 }
+
+export interface Company{
+  Name? : string | null,
+ }
+ 
 
 
 export async function PostToIngestionApi(content: Job) {
