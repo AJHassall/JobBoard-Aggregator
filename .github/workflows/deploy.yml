@@ -1,8 +1,14 @@
 name: Deploy
 on:
   workflow_call:
+    inputs:
+      environment:
+        type: string
+        description: environment to deploy to
+        required: true
 jobs:
   deploy:
+    environment: ${{ inputs.environment }}
     runs-on: self-hosted
 
     steps:
