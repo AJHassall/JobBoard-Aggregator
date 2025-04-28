@@ -1,0 +1,27 @@
+#root {
+
+  margin: 0 auto;
+  padding: 0;
+  text-align: center;
+  width: 100vw;
+  height: 100vh;
+}
+
+.container{
+  display: flex;
+  columns: 2;
+  flex-direction: row;
+  height: 100%;
+
+}
+.job-list{
+  height: 100%;
+  background-color: antiquewhite;
+  flex-grow:1;
+}
+
+.job-view{
+  background-color: black;
+
+  flex-grow:3;
+}
