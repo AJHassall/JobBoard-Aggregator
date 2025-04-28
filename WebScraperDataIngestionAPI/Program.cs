@@ -37,6 +37,8 @@ builder.Services.AddSwaggerGen();
 
 //builder.Services.AddHostedService<HourlyMessageSender>();
 builder.Services.AddHostedService<SixHourMessageSender>();
+builder.Services.AddHostedService<HourlyMessageSender>();
+
 
 
 
