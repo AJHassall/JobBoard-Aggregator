@@ -1,6 +1,6 @@
 import { IWorker } from "./Workers/IWorker";
 import { GetPremiumTopPicks } from "./Workers/GetPremiumTopPicks";
-import { DotNet24hrs } from "./Workers/LinkedInScraper";
+import { DotNet24hrs } from "./Workers/DotNetJobsPast24Hours";
 
 export async function createWorker(workerType: 'premiumPicks' | 'dotnet24hrs' | 'reportGenerator'): Promise<IWorker> {
     switch (workerType) {

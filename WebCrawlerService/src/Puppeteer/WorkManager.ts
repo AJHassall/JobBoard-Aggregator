@@ -21,6 +21,8 @@ export class WorkManager {
         headless: true,
         args: ["--no-sandbox", "--disable-setuid-sandbox"],
         defaultViewport: null,
+        slowMo:300
+        
       });
     }
 
